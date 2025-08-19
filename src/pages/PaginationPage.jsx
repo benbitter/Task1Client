@@ -32,11 +32,12 @@ export default function PaginationPage({ user  , theme}) {
   const { transcript, browserSupportsSpeechRecognition } = useSpeechRecognition({ commands });
 
   // ✅ Mic toggle
-  const toggleListening = () => {
+  const toggleListening = async () => {
     if (listening) {
       SpeechRecognition.stopListening();
       setListening(false);
     } else {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
       SpeechRecognition.startListening({
         continuous: true,
         interimResults: true,
