@@ -13,7 +13,7 @@ const Dashboard = ({ user ,theme }) => {
     const fetchQuestions = async () => {
       try {
         const response = await axios.post(
-          "https://task1authbackend.onrender.com/api/v1/questions/questions",
+          "https://task1questionbackend.onrender.com/api/v1/questions/questions",
           { ids: [...bookmarked, ...done] }
         );
 
