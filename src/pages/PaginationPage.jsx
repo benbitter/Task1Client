@@ -33,19 +33,36 @@ export default function PaginationPage({ user  , theme}) {
 
   // ✅ Mic toggle
   const toggleListening = async () => {
-    if (listening) {
-      SpeechRecognition.stopListening();
-      setListening(false);
-    } else {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+  if (listening) {
+    SpeechRecognition.stopListening();
+    setListening(false);
+  } else {
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true }); // ensure permission
       SpeechRecognition.startListening({
-        continuous: true,
+        continuous: false, // ✅ more reliable
         interimResults: true,
-        language: "en-IN",
+        language: "en-US", // ✅ use en-US, en-IN often fails
       });
       setListening(true);
+    } catch (err) {
+      console.error("Mic permission error:", err);
     }
-  };
+  }
+};
+useEffect(() => {
+  if (!listening) return;
+  const interval = setInterval(() => {
+    SpeechRecognition.startListening({
+      continuous: false,
+      interimResults: true,
+      language: "en-US",
+    });
+  }, 5000); // restart every 5s
+
+  return () => clearInterval(interval);
+}, [listening]);
+
 
   // Fetch data when sl_no changes
   useEffect(() => {
